@@ -1,4 +1,4 @@
-cat > rag.py << 'ENDOFFILE'
+
 import os, math, re
 from groq import Groq
 
@@ -112,4 +112,4 @@ Answer:"""
         messages=[{"role": "user", "content": prompt}]
     )
     return response.choices[0].message.content
-ENDOFFILE
+
