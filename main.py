@@ -16,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── State ──────────────────────────────────────────────────────
+# State
 _rag = None
 _ready = False
 
