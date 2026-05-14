@@ -46,22 +46,22 @@ This system uses **5 wearable sensors** and a **7-step clinical logic engine** t
 ### Logic Engine
 | File | Description |
 |------|-------------|
-| `logic_engine.py` | **Runnable Python script** — applies the complete 7-step medication titration logic to any patient dataset CSV. Accepts command-line arguments, prints a full decision summary, and saves results. Only requires `pandas` and `numpy`. |
+| `logic_engine.py` | **Runnable Python script**  applies the complete 7-step medication titration logic to any patient dataset CSV. Accepts command-line arguments, prints a full decision summary, and saves results. Only requires `pandas` and `numpy`. |
 
 ### RAG Chatbot Backend
 | File | Description |
 |------|-------------|
-| `main.py` | FastAPI backend server. Exposes `/ask`, `/upload`, and `/health` endpoints. Pre-loads all project knowledge at startup in a background thread. Deployed on Render. |
+| `main.py` | FastAPI backend server. Pre-loads all project knowledge at startup in a background thread. Deployed on Render. |
 | `rag.py` | RAG pipeline using TF-IDF retrieval (no local model needed) and Groq Llama-3.3-70B for answering questions about the project. |
-| `requirements.txt` | Python dependencies for the RAG backend — `fastapi`, `uvicorn`, `groq`, `pdfplumber`, `faiss-cpu`, `numpy`. |
+| `requirements.txt` | Python dependencies for the RAG backend  `fastapi`, `uvicorn`, `groq`, `pdfplumber`, `faiss-cpu`, `numpy`. |
 
 ### Documents
 | File | Description |
 |------|-------------|
-| `Project_Book.pdf` | Full 40-page project documentation covering problem statement, clinical background, system design, dataset pipeline, 7-step logic engine, results on 100 patients, challenges, and next steps. |
-| `HFrEF_Logic_Flowchart.pdf` | A2 portrait flowchart showing the complete 7-step IF-ELSE decision flow with all diamond gates, YES/NO branches, and drug outcomes for every scenario. Print at A2 for demo use. |
-| `HFrEF_Full_Project_Presentation.pptx` | Full 12-slide project presentation deck covering the problem, 5 sensors, 7 research papers, system workflow, MIMIC-IV dataset, and logic engine with results. |
-| `MIMIC_Dataset_Slides.pptx` | 4-slide focused deck on the MIMIC-IV dataset extraction and modification pipeline — ICD filtering funnel, 4 SQL extractions, final dataset schema, and key clinical findings. |
+| `Project_Book.pdf` | Full  project documentation covering problem statement, clinical background, system design, dataset pipeline, 7-step logic engine, results , challenges, and next steps. |
+| `HFrEF_Logic_Flowchart.pdf` | Flowchart showing the complete 7-step IF-ELSE decision flow with all diamond gates, YES/NO branches, and drug outcomes for every scenario. |
+| `HFrEF_Full_Project_Presentation.pptx` | Project presentation deck. |
+
 
 ---
 
@@ -140,10 +140,7 @@ Access requires credentialed PhysioNet account: [physionet.org/content/mimiciv](
 
 The website includes a live chat widget powered by the FastAPI backend on Render.
 
-
-
 ---
-
 ## Clinical Evidence Base
 
 Every rule is sourced from peer-reviewed publications:
