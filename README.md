@@ -5,6 +5,8 @@
 > An AI agent that reads wearable sensor data and automatically decides when to adjust 4 life-saving medications for Heart Failure (HFrEF) patients — 24 hours a day, no clinic visit needed.
 
 🌐 **Live Website:** [jayachandragg.github.io/HfrEF_3](https://jayachandragg.github.io/HfrEF_3)
+    **Ub Box:**https://ubuffalo-my.sharepoint.com/personal/maxpiers_buffalo_edu/_layouts/15/onedrive.aspx?e=5%3Ac9587450286d45b4b19b9e564f9d1bc1&sharingv2=true&fromShare=true&at=9&CT=1772850208634&OR=OWA%2DNT%2DMail&CID=df5612b3%2D89f1%2D28bf%2D21c3%2D313486787f93&clickParams=eyJYLUFwcE5hbWUiOiJNaWNyb3NvZnQgT3V0bG9vayBXZWIgQXBwIiwiWC1BcHBWZXJzaW9uIjoiMjAyNjAyMjcwMDIuMTYiLCJPUyI6IldpbmRvd3MgMTEifQ%3D%3D&cidOR=Client&id=%2Fpersonal%2Fmaxpiers%5Fbuffalo%5Fedu%2FDocuments%2FQAS%20Meetings&FolderCTID=0x01200000F7B0CA40EAE84DB1E404553997B9B6&view=0
+    **Trello Board:** https://trello.com/b/lHFcZhCK/pixel-minds
 
 ---
 
@@ -13,7 +15,7 @@
 | Name | Role |
 |------|------|
 | Jayachandra Galda | AI/ML Engineering · Agent Architecture · Dataset Pipeline |
-| Hema Priya Balaji | Decision Logic · 7-Step IF-ELSE Rule Formalisation |
+| Hema Priya Balaji | AI/ML Engineer· |
 | Srinivasa Rao Tummalapalli | Data Engineering · MIMIC-IV SQL Pipeline |
 
 **Client:** Dr. Ciprian Ionita — QAS.AI
@@ -133,17 +135,7 @@ Access requires credentialed PhysioNet account: [physionet.org/content/mimiciv](
 
 The website includes a live chat widget powered by the FastAPI backend on Render.
 
-**To run locally:**
-```bash
-pip install -r requirements.txt
-export GROQ_API_KEY="your_groq_key_here"
-uvicorn main:app --host 0.0.0.0 --port 8000
-```
 
-**Endpoints:**
-- `GET  /health` — check status and whether knowledge base is loaded
-- `POST /ask`    — `{"question": "What is the 7-step logic?"}` → answer
-- `POST /upload` — upload additional PDF or TXT to extend knowledge base
 
 ---
 
