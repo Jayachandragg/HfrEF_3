@@ -2,7 +2,7 @@
 ### PIXEL MINDS · University at Buffalo · CDA Project · Spring 2026
 ### Client: Dr. Ciprian Ionita, QAS.AI
 
-> An AI agent that reads wearable sensor data and automatically decides when to adjust 4 life-saving medications for Heart Failure (HFrEF) patients — 24 hours a day, no clinic visit needed.
+> An AI agent that reads wearable sensor data and automatically decides when to adjust 4 life-saving medications for Heart Failure (HFrEF) patients 24 hours a day, no clinic visit needed.
 
 🌐 **Live Website:** [jayachandragg.github.io/HfrEF_3](https://jayachandragg.github.io/HfrEF_3)
 
