@@ -39,9 +39,9 @@ import sys
 from datetime import datetime
 
 
-# ════════════════════════════════════════════════════════════════
-# HELPER
-# ════════════════════════════════════════════════════════════════
+
+
+
 def get(row, col, default=np.nan):
     """Safely read a column value, returning default if missing/NaN."""
     val = row.get(col, default)
@@ -50,9 +50,9 @@ def get(row, col, default=np.nan):
     return val
 
 
-# ════════════════════════════════════════════════════════════════
+
 # 7-STEP LOGIC ENGINE
-# ════════════════════════════════════════════════════════════════
+
 def run_logic(row):
     """
     Apply the 7-step HFrEF medication titration logic to one patient row.
@@ -80,7 +80,7 @@ def run_logic(row):
         'alert_reason':      '',
     }
 
-    # ── Read sensor + lab values ──────────────────────────────────
+    # Read sensor + lab values 
     hr        = get(row, 'heart_rate')
     sbp       = get(row, 'sbp')
     spo2      = get(row, 'spo2')
@@ -92,10 +92,10 @@ def run_logic(row):
     has_t1dm  = get(row, 'has_t1dm',  0)
     has_copd  = get(row, 'has_copd',  0)
 
-    # ════════════════════════════════════════════════════════════
+    
     # STEP 1 — Emergency Gates
     # Any trigger → HOLD ALL drugs, alert clinician immediately
-    # ════════════════════════════════════════════════════════════
+    
     reasons = []
     if not pd.isna(spo2)      and spo2      < 90:   reasons.append(f"SpO2={spo2:.0f}% (< 90%)")
     if not pd.isna(sbp)       and sbp       < 90:   reasons.append(f"SBP={sbp:.0f} mmHg (< 90)")
@@ -112,20 +112,19 @@ def run_logic(row):
             result[key] = 'HOLD_EMERGENCY'
         return result  # Stop — do not proceed with any drug decisions
 
-    # ════════════════════════════════════════════════════════════
     # STEP 2 — Fluid Classification
     # Uses resp_rate as proxy for thoracic impedance
     # (In real deployment: use impedance patch directly)
-    # ════════════════════════════════════════════════════════════
+   
     if not pd.isna(resp):
         if   resp > 22: result['step2_fluid'] = 'WET'
         elif resp < 16: result['step2_fluid'] = 'DRY'
         else:           result['step2_fluid'] = 'BORDERLINE'
     fluid = result['step2_fluid']
 
-    # ════════════════════════════════════════════════════════════
+
     # STEP 3 — Diuretic Decision (Furosemide / Torsemide)
-    # ════════════════════════════════════════════════════════════
+   
     if fluid == 'WET':
         if not pd.isna(creat) and creat > 2.0:
             result['step3_diuretic'] = 'ESCALATE'       # Kidney struggling → IV route
@@ -141,10 +140,10 @@ def run_logic(row):
     else:
         result['step3_diuretic'] = 'HOLD'
 
-    # ════════════════════════════════════════════════════════════
+    
     # STEP 4 — RAAS Inhibitor (ARNI preferred: Sacubitril/Valsartan)
     # All 3 gates must pass simultaneously
-    # ════════════════════════════════════════════════════════════
+
     gate_sbp  = pd.isna(sbp)       or sbp       >= 100
     gate_k    = pd.isna(potassium) or potassium  < 5.5
     gate_egfr = pd.isna(egfr)      or egfr       >= 30
@@ -158,10 +157,10 @@ def run_logic(row):
         if not gate_egfr: failed.append(f"eGFR={egfr:.0f} < 30")
         result['step4_raas'] = f"HOLD — gate failed: {', '.join(failed)}"
 
-    # ════════════════════════════════════════════════════════════
+    
     # STEP 5 — Beta Blocker (Carvedilol / Metoprolol / Bisoprolol)
     # Rule: DRY before you try
-    # ════════════════════════════════════════════════════════════
+   
     if fluid in ('WET', 'BORDERLINE'):
         result['step5_bb'] = 'SKIP — dry before you try'
     else:
@@ -181,11 +180,11 @@ def run_logic(row):
         else:
             result['step5_bb'] = 'HOLD — no HR data'
 
-    # ════════════════════════════════════════════════════════════
+  
     # STEP 6 — SGLT2 Inhibitor + MRA
     # SGLT2: Dapagliflozin / Empagliflozin — fixed 10mg
     # MRA:   Spironolactone / Eplerenone
-    # ════════════════════════════════════════════════════════════
+    
 
     # SGLT2
     if has_t1dm:
@@ -207,11 +206,11 @@ def run_logic(row):
     else:
         result['step6_mra'] = 'HOLD — safety threshold not met'
 
-    # ════════════════════════════════════════════════════════════
+  
     # STEP 7 — Trajectory Check
     # Simplified: checks current row HR + SBP pattern
     # Full version: rolling window across last 3 readings
-    # ════════════════════════════════════════════════════════════
+
     if not pd.isna(hr) and not pd.isna(sbp):
         if hr > 100 and sbp < 100:
             result['step7_trajectory'] = 'WORSENING'    # haemodynamic stress pattern
@@ -223,9 +222,9 @@ def run_logic(row):
     return result
 
 
-# ════════════════════════════════════════════════════════════════
+
 # VALIDATE COLUMNS
-# ════════════════════════════════════════════════════════════════
+
 REQUIRED_COLS = [
     'subject_id', 'hadm_id', 'charttime',
     'heart_rate', 'sbp', 'spo2', 'resp_rate',
@@ -247,9 +246,9 @@ def validate_columns(df):
     return df
 
 
-# ════════════════════════════════════════════════════════════════
+
 # MAIN
-# ════════════════════════════════════════════════════════════════
+
 def main():
     parser = argparse.ArgumentParser(
         description='PIXEL MINDS — HFrEF Medication Titration Logic Engine',
@@ -266,7 +265,7 @@ def main():
                         help='Run on ALL patients in the dataset (overrides --patients)')
     args = parser.parse_args()
 
-    # ── Banner ────────────────────────────────────────────────────
+    
     print("""
 ╔══════════════════════════════════════════════════════════════════╗
 ║     PIXEL MINDS — HFrEF Medication Titration Logic Engine       ║
@@ -275,9 +274,9 @@ def main():
 ╚══════════════════════════════════════════════════════════════════╝
 """)
 
-    # ── Load data ─────────────────────────────────────────────────
+
     if not os.path.exists(args.input):
-        print(f"❌ Input file not found: {args.input}")
+        print(f" Input file not found: {args.input}")
         print(f"   Download MIMIC-IV from https://physionet.org/content/mimiciv/")
         print(f"   Or provide your own CSV with: --input your_file.csv")
         sys.exit(1)
@@ -287,9 +286,9 @@ def main():
     df['charttime'] = pd.to_datetime(df['charttime'], errors='coerce')
     df = validate_columns(df)
 
-    print(f"  ✓ {len(df):,} rows | {df['subject_id'].nunique():,} unique patients")
+    print(f"   {len(df):,} rows | {df['subject_id'].nunique():,} unique patients")
 
-    # ── Select patients ───────────────────────────────────────────
+
     all_patients = df['subject_id'].unique()
     if args.all:
         selected = all_patients
@@ -301,12 +300,12 @@ def main():
 
     sample = df[df['subject_id'].isin(selected)].copy()
 
-    # ── Run logic ─────────────────────────────────────────────────
+    # Run logic 
     print(f"\nRunning 7-step logic engine...")
     results = sample.apply(run_logic, axis=1, result_type='expand')
     print(f"  ✓ {len(results):,} decisions made\n")
 
-    # ── Print summary ─────────────────────────────────────────────
+    # Print summary
     sep = "─" * 55
     print(f"\n{sep}")
     print(f"  RESULTS SUMMARY")
@@ -338,14 +337,14 @@ def main():
         for reason, cnt in top.items():
             print(f"    {reason}: {cnt:,}")
 
-    # ── Save ──────────────────────────────────────────────────────
+    #Save
     if args.output is None:
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         args.output = f"hfref_logic_results_{ts}.csv"
 
     results.to_csv(args.output, index=False)
     print(f"\n{'─'*55}")
-    print(f"  ✅ Results saved to: {args.output}")
+    print(f"   Results saved to: {args.output}")
     print(f"{'─'*55}\n")
 
 
