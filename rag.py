@@ -110,7 +110,7 @@ Context:
 Question: {question}
 Answer:"""
     response = get_client().chat.completions.create(
-        model="meta-llama/llama-3.3-70b-instruct:free",
+        model="openai/gpt-oss-120b:free",
         messages=[{"role": "user", "content": prompt}]
     )
     return response.choices[0].message.content
