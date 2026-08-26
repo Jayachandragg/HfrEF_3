@@ -1,6 +1,5 @@
-
 import os, math, re
-from groq import Groq
+from openai import OpenAI
 
 chunks = []
 tfidf_matrix = []
@@ -12,7 +11,10 @@ _client = None
 def get_client():
     global _client
     if _client is None:
-        _client = Groq(api_key=os.environ.get("GROQ_API_KEY", ""))
+        _client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=os.environ.get("OPENROUTER_API_KEY", ""),
+        )
     return _client
 
 def tokenize(text):
@@ -108,8 +110,7 @@ Context:
 Question: {question}
 Answer:"""
     response = get_client().chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="meta-llama/llama-3.3-70b-instruct:free",
         messages=[{"role": "user", "content": prompt}]
     )
     return response.choices[0].message.content
-
